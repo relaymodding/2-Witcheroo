@@ -1,0 +1,6 @@
+{
+  "behaviour": "witcheroo:passive_behaviour",
+  "validTypes": [
+    "minecraft:cat"
+  ]
+}
