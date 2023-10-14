@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import org.relaymodding.witcheroo.Witcheroo;
 import org.relaymodding.witcheroo.familiar.Familiar;
+import org.relaymodding.witcheroo.familiar.type.FamiliarType;
 
 import java.util.Collection;
 import java.util.Set;
@@ -16,9 +17,11 @@ public interface Witch {
 
     void addFamiliar(Familiar Familiar);
 
-    void removeFamiliarByName(final String name);
+    void removeFamiliar(FamiliarType type);
 
-    Familiar getFamiliarByName(final String name);
+    Familiar getFamiliar(FamiliarType type);
+
+    boolean hasFamiliar(FamiliarType type);
 
     Set<ResourceLocation> getCompletedRituals();
 
@@ -27,4 +30,6 @@ public interface Witch {
     void deserializeNBT(CompoundTag tag);
 
     int getMana();
+
+    int getMaxMana();
 }

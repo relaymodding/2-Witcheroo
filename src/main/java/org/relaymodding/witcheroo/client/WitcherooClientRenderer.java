@@ -1,4 +1,5 @@
 package org.relaymodding.witcheroo.client;
+
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexMultiConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;

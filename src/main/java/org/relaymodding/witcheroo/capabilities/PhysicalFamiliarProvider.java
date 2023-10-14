@@ -13,25 +13,25 @@ public class PhysicalFamiliarProvider implements ICapabilitySerializable<Compoun
 
     private final LazyOptional<PhysicalFamiliar> familiarLazyOptional;
 
-    public PhysicalFamiliarProvider(LazyOptional<PhysicalFamiliar> familiarLazyOptional){
+    public PhysicalFamiliarProvider(LazyOptional<PhysicalFamiliar> familiarLazyOptional) {
         this.familiarLazyOptional = familiarLazyOptional;
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side){
-        if(cap == Witcheroo.FAMILIAR_CAPABILITY) {
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        if (cap == Witcheroo.FAMILIAR_CAPABILITY) {
             return familiarLazyOptional.cast();
         }
         return LazyOptional.empty();
     }
 
     @Override
-    public CompoundTag serializeNBT(){
+    public CompoundTag serializeNBT() {
         return familiarLazyOptional.orElseThrow(RuntimeException::new).serializeNBT();
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag){
+    public void deserializeNBT(CompoundTag tag) {
         familiarLazyOptional.orElseThrow(RuntimeException::new).deserializeNBT(tag);
 
     }

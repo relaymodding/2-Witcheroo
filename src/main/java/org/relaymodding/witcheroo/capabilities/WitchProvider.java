@@ -13,25 +13,25 @@ public class WitchProvider implements ICapabilitySerializable<CompoundTag> {
 
     private final LazyOptional<Witch> witchLazyOptional;
 
-    public WitchProvider(LazyOptional<Witch> witchLazyOptional){
+    public WitchProvider(LazyOptional<Witch> witchLazyOptional) {
         this.witchLazyOptional = witchLazyOptional;
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side){
-        if(cap == Witcheroo.WITCH_CAPABILITY) {
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        if (cap == Witcheroo.WITCH_CAPABILITY) {
             return witchLazyOptional.cast();
         }
         return LazyOptional.empty();
     }
 
     @Override
-    public CompoundTag serializeNBT(){
+    public CompoundTag serializeNBT() {
         return witchLazyOptional.orElseThrow(RuntimeException::new).serializeNBT();
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag){
+    public void deserializeNBT(CompoundTag tag) {
         witchLazyOptional.orElseThrow(RuntimeException::new).deserializeNBT(tag);
     }
 }

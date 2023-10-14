@@ -1,0 +1,12 @@
+{
+  "type": "witcheroo:basic",
+  "name": {
+    "translate": "familiar.feline.salem.name"
+  },
+  "description": {
+    "translate": "familiar.feline.salem.description"
+  },
+  "vessel_tag": "witcheroo:vessel_of_feline_familiars",
+  "max_mana": 25,
+  "max_level": 5
+}

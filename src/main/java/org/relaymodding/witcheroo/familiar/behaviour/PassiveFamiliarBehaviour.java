@@ -2,7 +2,15 @@ package org.relaymodding.witcheroo.familiar.behaviour;
 
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.TamableAnimal;
-import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.CatLieOnBedGoal;
+import net.minecraft.world.entity.ai.goal.CatSitOnBlockGoal;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.FollowOwnerGoal;
+import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.PanicGoal;
+import net.minecraft.world.entity.ai.goal.SitWhenOrderedToGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.player.Player;
 
@@ -10,7 +18,7 @@ import net.minecraft.world.entity.player.Player;
 public class PassiveFamiliarBehaviour implements FamiliarBehaviour {
 
     @Override
-    public void registerGoals(PathfinderMob target, Player owner){
+    public void registerGoals(PathfinderMob target, Player owner) {
         target.goalSelector.addGoal(1, new FloatGoal(target));
         if (target instanceof TamableAnimal tamableAnimal) {
             tamableAnimal.tame(owner);
@@ -29,7 +37,7 @@ public class PassiveFamiliarBehaviour implements FamiliarBehaviour {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "PassiveFamiliarBehaviour{}";
     }
 }

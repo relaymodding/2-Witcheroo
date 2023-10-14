@@ -2,7 +2,6 @@ package org.relaymodding.witcheroo.capabilities;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +22,7 @@ public interface PhysicalFamiliar {
 
     boolean isBound();
 
-    void setBound();
+    void setBound(boolean bound);
 
     void setOwner(UUID uuid);
 
