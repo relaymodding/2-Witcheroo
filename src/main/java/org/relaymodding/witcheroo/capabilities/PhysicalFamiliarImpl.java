@@ -1,20 +1,22 @@
 package org.relaymodding.witcheroo.capabilities;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.level.Level;
+import java.util.UUID;
+
 import org.relaymodding.witcheroo.familiar.behaviour.FamiliarBehaviour;
 
-import java.util.UUID;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.PathfinderMob;
 
 public class PhysicalFamiliarImpl implements PhysicalFamiliar {
 
-    private static final String ENTITY_ID = "witcheroo_entityid";
-    private int entityId;
+    private static final String ENTITY_ID = "entity_id";
+    private UUID entityId;
     private FamiliarBehaviour behaviour;
     private UUID ownerId;
 
-    private static final String OWNER = "witcheroo_owner";
+    private static final String OWNER = "owner";
 
     private boolean isBound;
 
@@ -22,22 +24,22 @@ public class PhysicalFamiliarImpl implements PhysicalFamiliar {
     }
 
     public PhysicalFamiliarImpl(PathfinderMob entity) {
-        this.entityId = entity.getId();
+        this.entityId = entity.getUUID();
     }
 
     @Override
-    public int getEntityId() {
+    public UUID getEntityId() {
         return entityId;
     }
 
     @Override
-    public PathfinderMob getEntity(Level level) {
+    public PathfinderMob getEntity(ServerLevel level) {
         return (PathfinderMob) level.getEntity(this.entityId);
     }
 
     @Override
     public void attachTo(PathfinderMob mob) {
-        this.entityId = mob.getId();
+        this.entityId = mob.getUUID();
     }
 
     @Override
@@ -74,7 +76,7 @@ public class PhysicalFamiliarImpl implements PhysicalFamiliar {
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         if (isBound) {
-            tag.putInt(ENTITY_ID, entityId);
+            tag.putUUID(ENTITY_ID, entityId);
             tag.putUUID(OWNER, ownerId);
         }
         return tag;
@@ -82,9 +84,10 @@ public class PhysicalFamiliarImpl implements PhysicalFamiliar {
 
     @Override
     public void deserializeNBT(CompoundTag tag) {
-        if (tag.contains(ENTITY_ID)) {
-            entityId = tag.getInt(ENTITY_ID);
+        if (tag.contains(ENTITY_ID, Tag.TAG_INT_ARRAY)) {
+            entityId = tag.getUUID(ENTITY_ID);
             ownerId = tag.getUUID(OWNER);
+            isBound = true;
         }
     }
 }

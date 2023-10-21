@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "minecraft:cat"
+    "minecraft:cat",
+    "minecraft:ocelot"
   ]
 }

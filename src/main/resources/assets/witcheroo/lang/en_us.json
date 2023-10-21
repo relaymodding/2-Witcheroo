@@ -22,6 +22,7 @@
   "witcheroo.notices.player_mana": "%s's mana is %s/%s",
   "witcheroo.notices.no_witch_cap": "%s is not a witch!",
   "witcheroo.notices.no_familiairs": "%s has no familiars.",
+  "witcheroo.notices.cleared_familiars": "Cleared %s familiar(s) from player %s.",
   "witcheroo.notices.name": "Name: %s",
   "witcheroo.notices.mana": "Mana: %s",
   "witcheroo.notices.level": "Level: %s/%s",

@@ -36,7 +36,6 @@ public class FamiliarBounding {
             familiar.attachTo(body, owner);
             capability.attachTo(oldBody);
             capability.setOwner(owner.getUUID());
-            familiar.setPhysicalBody(true);
             body.setCustomName(familiar.getType().getDisplayName());
             WitcherooPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new SyncFamiliarPacket(body.getId(), SyncFamiliarPacket.ADD_ENTITY));
         });

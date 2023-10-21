@@ -35,7 +35,9 @@ public class WitcherooRegistries {
 
 
     public static final ResourceKey<Registry<FamiliarDefinition>> FAMILIAR_DEFINITION_RESOURCE_KEY = ResourceKey.createRegistryKey(Witcheroo.resourceLocation("familiar_definitions"));
-    public static final ResourceKey<FamiliarDefinition> CAT_PASSIVE_DEFINITION = ResourceKey.create(FAMILIAR_DEFINITION_RESOURCE_KEY, Witcheroo.resourceLocation("passive_cat"));
+    public static final ResourceKey<FamiliarDefinition> PASSIVE_CAT_DEFINITION = ResourceKey.create(FAMILIAR_DEFINITION_RESOURCE_KEY, Witcheroo.resourceLocation("passive_cat"));
+    public static final ResourceKey<FamiliarDefinition> DEFENSIVE_BEAR_DEFINITION = ResourceKey.create(FAMILIAR_DEFINITION_RESOURCE_KEY, Witcheroo.resourceLocation("defensive_bird"));
+    public static final ResourceKey<FamiliarDefinition> HOSTILE_BIRD_DEFINITION = ResourceKey.create(FAMILIAR_DEFINITION_RESOURCE_KEY, Witcheroo.resourceLocation("hostile_bear"));
 
     public static final Codec<FamiliarBehaviour> FAMILIAR_BEHAVIOUR_CODEC = ResourceLocation.CODEC.xmap(
             resourceLocation -> SUPPLIER_FAMILIAR_BEHAVIOURS.get().getValue(resourceLocation),

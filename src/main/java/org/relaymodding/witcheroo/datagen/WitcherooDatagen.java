@@ -13,17 +13,40 @@ import java.util.List;
 import java.util.Set;
 
 public class WitcherooDatagen {
-
-    public static void datagen(final GatherDataEvent event) {
-        event.getGenerator().addProvider(event.includeServer(),
-                (DataProvider.Factory<DatapackBuiltinEntriesProvider>) output ->
-                        new DatapackBuiltinEntriesProvider(output, event.getLookupProvider(),
-                                new RegistrySetBuilder().add(WitcherooRegistries.FAMILIAR_DEFINITION_RESOURCE_KEY, bootstrap -> {
-                                    bootstrap.register(WitcherooRegistries.CAT_PASSIVE_DEFINITION, new FamiliarDefinition(
-                                            List.of(EntityType.CAT),
-                                            WitcherooRegistries.PASSIVE_FAMILIAR_BEHAVIOUR.get()
-                                    ));
-                                }),
-                                Set.of(Witcheroo.MOD_ID)));
-    }
+	public static void datagen(final GatherDataEvent event) {
+		event.getGenerator().addProvider(
+			event.includeServer(),
+			(DataProvider.Factory<DatapackBuiltinEntriesProvider>) output -> new DatapackBuiltinEntriesProvider(
+				output,
+				event.getLookupProvider(),
+				new RegistrySetBuilder().add(
+					WitcherooRegistries.FAMILIAR_DEFINITION_RESOURCE_KEY,
+					bootstrap -> {
+						bootstrap.register(
+							WitcherooRegistries.PASSIVE_CAT_DEFINITION,
+							new FamiliarDefinition(
+								List.of(EntityType.CAT),
+								WitcherooRegistries.PASSIVE_FAMILIAR_BEHAVIOUR.get()
+							)
+						);
+						bootstrap.register(
+							WitcherooRegistries.DEFENSIVE_BEAR_DEFINITION,
+							new FamiliarDefinition(
+								List.of(EntityType.PANDA, EntityType.POLAR_BEAR),
+								WitcherooRegistries.DEFENSIVE_FAMILIAR_BEHAVIOUR.get()
+							)
+						);
+						bootstrap.register(
+							WitcherooRegistries.HOSTILE_BIRD_DEFINITION,
+							new FamiliarDefinition(
+								List.of(EntityType.PARROT),
+								WitcherooRegistries.HOSTILE_FAMILIAR_BEHAVIOUR.get()
+							)
+						);
+					}
+				),
+				Set.of(Witcheroo.MOD_ID)
+			)
+		);
+	}
 }

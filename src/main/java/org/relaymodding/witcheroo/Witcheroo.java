@@ -1,26 +1,7 @@
 package org.relaymodding.witcheroo;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.animal.Cat;
-import net.minecraft.world.entity.animal.Pig;
-import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import java.util.Optional;
+
 import org.relaymodding.witcheroo.capabilities.PhysicalFamiliar;
 import org.relaymodding.witcheroo.capabilities.PhysicalFamiliarImpl;
 import org.relaymodding.witcheroo.capabilities.PhysicalFamiliarProvider;
@@ -29,12 +10,37 @@ import org.relaymodding.witcheroo.capabilities.WitchImpl;
 import org.relaymodding.witcheroo.capabilities.WitchProvider;
 import org.relaymodding.witcheroo.commands.WitcherooCommands;
 import org.relaymodding.witcheroo.datagen.WitcherooDatagen;
-import org.relaymodding.witcheroo.familiar.Familiar;
 import org.relaymodding.witcheroo.familiar.FamiliarBounding;
+import org.relaymodding.witcheroo.network.SyncFamiliarPacket;
 import org.relaymodding.witcheroo.network.WitcherooPacketHandler;
-import org.relaymodding.witcheroo.recipe.rituals.alchemy.AlchemyRitual;
 import org.relaymodding.witcheroo.recipe.rituals.alchemy.SwitchBlockRitual;
 import org.relaymodding.witcheroo.registries.WitcherooRegistries;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.network.PacketDistributor;
 
 @Mod(Witcheroo.MOD_ID)
 public class Witcheroo {
@@ -51,8 +57,10 @@ public class Witcheroo {
         modEventBus.addListener(WitcherooDatagen::datagen);
         modEventBus.addListener(Witcheroo::registerCapabilitiesEvent);
 
-        MinecraftForge.EVENT_BUS.addListener(Witcheroo::summonTest);
         MinecraftForge.EVENT_BUS.addListener(Witcheroo::ritualTest);
+        MinecraftForge.EVENT_BUS.addListener(Witcheroo::familiarBodyLoadEvent);
+        MinecraftForge.EVENT_BUS.addListener(Witcheroo::familiarBodyDeathEvent);
+        MinecraftForge.EVENT_BUS.addListener(Witcheroo::familiarSummonTest);
         MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, Witcheroo::attachCapabilitiesEvent);
         MinecraftForge.EVENT_BUS.addListener(Witcheroo::registerCommands);
 
@@ -87,16 +95,51 @@ public class Witcheroo {
             SwitchBlockRitual.DIRT_TO_DIAMOND.apply(event.getEntity(), event.getLevel(), event.getPos(), event.getLevel().getBlockState(event.getPos()));
         }
     }
-
-    public static void summonTest(final PlayerInteractEvent.EntityInteractSpecific event) {
+    
+    // TODO FIXME
+    public static void familiarBodyLoadEvent(final EntityJoinLevelEvent event) {
+    	final Entity entity = event.getEntity();
+    	entity.getCapability(Witcheroo.FAMILIAR_CAPABILITY).ifPresent(cap -> {
+    		if (cap.getOwner() != null) {
+                WitcherooPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new SyncFamiliarPacket(entity.getId(), SyncFamiliarPacket.ADD_ENTITY));
+    		}
+    	});
+    }
+    
+    public static void familiarBodyDeathEvent(final LivingDeathEvent event) {
+    	final LivingEntity entity = event.getEntity();
+    	final Level level = entity.level();
+    	entity.getCapability(Witcheroo.FAMILIAR_CAPABILITY).ifPresent(cap -> {
+    		final Player player = Optional.ofNullable(cap.getOwner()).map(level::getPlayerByUUID).orElse(null);
+    		
+    		if (player != null) {
+    			player.getCapability(WITCH_CAPABILITY).ifPresent(capability -> {
+    				capability.getOwnedFamiliars().stream()
+    					.filter(f -> f.hasPhysicalBody() && f.getEntityId().equals(entity.getUUID()))
+    					.forEach(f -> f.setPhysicalBody(false));
+    			});
+    		}
+    		
+            WitcherooPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new SyncFamiliarPacket(entity.getId(), SyncFamiliarPacket.REMOVE_ENTITY));
+            cap.setBound(false);
+    	});
+    }
+    
+    public static void familiarSummonTest(final PlayerInteractEvent.EntityInteractSpecific event) {
         if (!(event.getLevel() instanceof ServerLevel) || event.getHand() != InteractionHand.MAIN_HAND) return;
-        if (event.getTarget() instanceof Cat cat) {
+        
+        if (event.getTarget() instanceof PathfinderMob mob && !mob.getCapability(Witcheroo.FAMILIAR_CAPABILITY).map(PhysicalFamiliar::isBound).orElse(true)) {
             event.getEntity().getCapability(WITCH_CAPABILITY).ifPresent(capability -> {
                 if (!capability.getOwnedFamiliars().isEmpty()) {
-                    FamiliarBounding.grantPhysicalBody(event.getEntity(), capability.getOwnedFamiliars().toArray(Familiar[]::new)[0], cat);
+                	capability.getOwnedFamiliars().stream()
+                		.filter(f -> !f.hasPhysicalBody() && f.getType().isSuitableVessel(mob)).findAny()
+                		.ifPresent(familiar -> {
+                			FamiliarBounding.grantPhysicalBody(event.getEntity(), familiar, mob);
+                		});
                 }
             });
         }
+        
         if (event.getTarget() instanceof Pig) {
 
             event.getEntity().getCapability(Witcheroo.WITCH_CAPABILITY).ifPresent(witch -> {

@@ -16,7 +16,7 @@ import org.relaymodding.witcheroo.familiar.Familiar;
 
 public class BasicType implements FamiliarType {
 
-    public static FamiliarTypeSerializer<BasicType> SERIALIZER = new Serializer();
+    public static final FamiliarTypeSerializer<BasicType> SERIALIZER = new Serializer();
 
     private final int maxMana;
     private final int maxLevel;

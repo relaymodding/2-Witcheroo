@@ -1,22 +1,23 @@
 package org.relaymodding.witcheroo.capabilities;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.level.Level;
+import java.util.UUID;
+
 import org.jetbrains.annotations.Nullable;
 import org.relaymodding.witcheroo.Witcheroo;
 import org.relaymodding.witcheroo.familiar.behaviour.FamiliarBehaviour;
 
-import java.util.UUID;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.PathfinderMob;
 
 public interface PhysicalFamiliar {
 
     ResourceLocation ID = Witcheroo.resourceLocation("physical_familiar");
 
-    int getEntityId();
+    UUID getEntityId();
 
-    @Nullable PathfinderMob getEntity(Level level);
+    @Nullable PathfinderMob getEntity(ServerLevel level);
 
     void attachTo(PathfinderMob entity);
 
