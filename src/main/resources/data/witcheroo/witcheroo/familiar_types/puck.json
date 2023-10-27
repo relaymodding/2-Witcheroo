@@ -1,0 +1,12 @@
+{
+  "type": "witcheroo:basic",
+  "name": {
+    "translate": "familiar.ursine.puck.name"
+  },
+  "description": {
+    "translate": "familiar.ursine.puck.description"
+  },
+  "vessel_tag": "witcheroo:vessel_of_ursine_familiars",
+  "max_mana": 25,
+  "max_level": 5
+}

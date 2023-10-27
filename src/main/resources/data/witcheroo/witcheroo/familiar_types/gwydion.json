@@ -1,0 +1,12 @@
+{
+  "type": "witcheroo:basic",
+  "name": {
+    "translate": "familiar.avian.gwydion.name"
+  },
+  "description": {
+    "translate": "familiar.avian.gwydion.description"
+  },
+  "vessel_tag": "witcheroo:vessel_of_avian_familiars",
+  "max_mana": 25,
+  "max_level": 5
+}

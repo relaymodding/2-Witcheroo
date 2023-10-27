@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.relaymodding.witcheroo.Witcheroo;
+import org.relaymodding.witcheroo.capabilities.Capabilities;
 import org.relaymodding.witcheroo.capabilities.Witch;
 
 import java.util.Map;
@@ -31,7 +32,7 @@ public class SwitchBlockRitual implements AlchemyRitual {
     @Override
     public boolean canPlayerPerformRitual(ServerPlayer player) {
 
-        final Witch witch = player.getCapability(Witcheroo.WITCH_CAPABILITY).resolve().orElse(null);
+        final Witch witch = player.getCapability(Capabilities.WITCH_CAPABILITY).resolve().orElse(null);
         return witch != null && witch.getMana() > this.getManaCost();
     }
 
@@ -70,7 +71,7 @@ public class SwitchBlockRitual implements AlchemyRitual {
     @Override
     public void onPlayerPerformedRitual(ServerPlayer player) {
 
-        final Witch witch = player.getCapability(Witcheroo.WITCH_CAPABILITY).resolve().orElse(null);
+        final Witch witch = player.getCapability(Capabilities.WITCH_CAPABILITY).resolve().orElse(null);
 
         if (witch != null) {
 

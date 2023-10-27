@@ -7,12 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.relaymodding.witcheroo.familiar.Familiar;
 import org.relaymodding.witcheroo.familiar.type.FamiliarType;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class WitchImpl implements Witch {
 
@@ -101,5 +96,26 @@ public class WitchImpl implements Witch {
     @Override
     public int getMaxMana() {
         return familiars.values().stream().map(familiar -> familiar.getType().getMaxMana()).reduce(0, Integer::sum);
+    }
+
+    @Override
+    public void setMana(int mana) {
+        if (mana > getMaxMana()) {
+            mana = getMaxMana();
+        }
+        else if (mana < 0) {
+            mana = 0;
+        }
+
+        this.mana = mana;
+    }
+
+    @Override
+    public boolean consumeMana(int mana) {
+        if (mana < this.mana) {
+            setMana(this.mana - mana);
+            return true;
+        }
+        return false;
     }
 }

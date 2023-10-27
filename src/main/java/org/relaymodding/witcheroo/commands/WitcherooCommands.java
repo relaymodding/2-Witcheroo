@@ -1,16 +1,8 @@
 package org.relaymodding.witcheroo.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.relaymodding.witcheroo.Witcheroo;
-import org.relaymodding.witcheroo.capabilities.Witch;
-import org.relaymodding.witcheroo.familiar.Familiar;
-
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -20,15 +12,23 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
+import org.relaymodding.witcheroo.capabilities.Capabilities;
+import org.relaymodding.witcheroo.capabilities.Witch;
+import org.relaymodding.witcheroo.familiar.Familiar;
+import org.relaymodding.witcheroo.util.Reference;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WitcherooCommands {
 
     public static void buildCommands(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context, Commands.CommandSelection environment) {
 
-        final LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal(Witcheroo.MOD_ID);
+        final LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal(Reference.MOD_ID);
         playerCommand(List.of("familiars", "list"), root, WitcherooCommands::printFamiliars);
         playerCommand(List.of("familiars", "clear"), root, WitcherooCommands::clearFamiliars);
-        playerCommand(List.of("mana"), root, WitcherooCommands::getCurrentMana);
+        playerCommand(List.of("mana", "show"), root, WitcherooCommands::getCurrentMana);
+		playerCommand(List.of("mana", "fill"), root, WitcherooCommands::fillMana);
         dispatcher.register(root);
     }
 
@@ -57,34 +57,11 @@ public class WitcherooCommands {
 		parent.then(command);
     }
 
-    private static int getCurrentMana(Player player, CommandContext<CommandSourceStack> ctx) {
-
-        if (player instanceof ServerPlayer serverPlayer) {
-
-            final LazyOptional<Witch> cap = serverPlayer.getCapability(Witcheroo.WITCH_CAPABILITY);
-
-            if (cap.isPresent()) {
-
-                cap.ifPresent(witch -> {
-
-                    ctx.getSource().sendSuccess(() -> Component.translatable("witcheroo.notices.player_mana", serverPlayer.getDisplayName(), Component.literal(Integer.toString(witch.getMana())), Component.literal(Integer.toString(witch.getMaxMana()))), false);
-                });
-            }
-
-            else {
-
-                ctx.getSource().sendFailure(Component.translatable("witcheroo.notices.no_witch_cap", player.getDisplayName()));
-            }
-        }
-
-        return 0;
-    }
-
     private static int printFamiliars(Player player, CommandContext<CommandSourceStack> ctx) {
 
         if (player instanceof ServerPlayer serverPlayer) {
 
-            final LazyOptional<Witch> cap = serverPlayer.getCapability(Witcheroo.WITCH_CAPABILITY);
+            final LazyOptional<Witch> cap = serverPlayer.getCapability(Capabilities.WITCH_CAPABILITY);
 
             if (cap.isPresent()) {
 
@@ -104,7 +81,7 @@ public class WitcherooCommands {
 
                     else {
 
-                        ctx.getSource().sendFailure(Component.translatable("witcheroo.notices.no_familiairs", player.getDisplayName()));
+                        ctx.getSource().sendFailure(Component.translatable("witcheroo.notices.no_familiars", player.getDisplayName()));
                     }
                 });
             }
@@ -121,7 +98,7 @@ public class WitcherooCommands {
 
         if (player instanceof ServerPlayer serverPlayer) {
 
-            final LazyOptional<Witch> cap = serverPlayer.getCapability(Witcheroo.WITCH_CAPABILITY);
+            final LazyOptional<Witch> cap = serverPlayer.getCapability(Capabilities.WITCH_CAPABILITY);
 
             if (cap.isPresent()) {
 
@@ -130,18 +107,65 @@ public class WitcherooCommands {
                     if (!witch.getOwnedFamiliars().isEmpty()) {
                     	final List<Familiar> toRemove = new ArrayList<>(witch.getOwnedFamiliars());
                     	toRemove.stream().map(Familiar::getType).forEach(witch::removeFamiliar);
-                    	
+
                         ctx.getSource().sendSuccess(() -> Component.translatable("witcheroo.notices.cleared_familiars", toRemove.size(), player.getDisplayName()), false);
                     }
 
                     else {
 
-                        ctx.getSource().sendFailure(Component.translatable("witcheroo.notices.no_familiairs", player.getDisplayName()));
+                        ctx.getSource().sendFailure(Component.translatable("witcheroo.notices.no_familiars", player.getDisplayName()));
                     }
                 });
             }
 
             else {
+                ctx.getSource().sendFailure(Component.translatable("witcheroo.notices.no_witch_cap", player.getDisplayName()));
+            }
+        }
+
+        return 0;
+    }
+
+    private static int getCurrentMana(Player player, CommandContext<CommandSourceStack> ctx) {
+
+        if (player instanceof ServerPlayer serverPlayer) {
+
+            final LazyOptional<Witch> cap = serverPlayer.getCapability(Capabilities.WITCH_CAPABILITY);
+
+            if (cap.isPresent()) {
+
+                cap.ifPresent(witch -> {
+
+                    ctx.getSource().sendSuccess(() -> Component.translatable("witcheroo.notices.player_mana", serverPlayer.getDisplayName(), Component.literal(Integer.toString(witch.getMana())), Component.literal(Integer.toString(witch.getMaxMana()))), false);
+                });
+            }
+
+            else {
+
+                ctx.getSource().sendFailure(Component.translatable("witcheroo.notices.no_witch_cap", player.getDisplayName()));
+            }
+        }
+
+        return 0;
+    }
+
+    private static int fillMana(Player player, CommandContext<CommandSourceStack> ctx) {
+
+        if (player instanceof ServerPlayer serverPlayer) {
+
+            final LazyOptional<Witch> cap = serverPlayer.getCapability(Capabilities.WITCH_CAPABILITY);
+
+            if (cap.isPresent()) {
+
+                cap.ifPresent(witch -> {
+					witch.setMana(witch.getMaxMana());
+
+                    ctx.getSource().sendSuccess(() -> Component.translatable("witcheroo.notices.mana_filled", Component.literal(Integer.toString(witch.getMana())), Component.literal(Integer.toString(witch.getMaxMana()))), false);
+                });
+            }
+
+            else {
+
                 ctx.getSource().sendFailure(Component.translatable("witcheroo.notices.no_witch_cap", player.getDisplayName()));
             }
         }

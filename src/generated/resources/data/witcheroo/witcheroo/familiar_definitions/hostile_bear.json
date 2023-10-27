@@ -1,0 +1,6 @@
+{
+  "behaviour": "witcheroo:hostile_behaviour",
+  "validTypes": [
+    "minecraft:parrot"
+  ]
+}

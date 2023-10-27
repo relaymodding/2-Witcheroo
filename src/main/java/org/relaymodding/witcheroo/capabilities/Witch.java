@@ -32,4 +32,8 @@ public interface Witch {
     int getMana();
 
     int getMaxMana();
+
+    void setMana(int mana);
+
+    boolean consumeMana(int mana);
 }

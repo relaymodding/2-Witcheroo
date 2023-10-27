@@ -1,5 +1,16 @@
 {
+  "__comment_items": "Items",
+
+  "item.witcheroo.witch_staff" : "Witch Staff",
+
+
   "__comment_familiars": "Familiars",
+
+  "familiar.avian.aoelus.name": "Aoelus",
+  "familiar.avian.aoelus.description": "An arcane spirit for which no wind speed is too high.",
+  "familiar.avian.gwydion.name": "Gwydion",
+  "familiar.avian.gwydion.description": "An energetic spirit filled with mischief.",
+
   "familiar.feline.agatha.name": "Agatha",
   "familiar.feline.agatha.description": "A virtuous spirit that exudes positivity.",
   "familiar.feline.ambrose.name": "Ambrose",
@@ -18,15 +29,34 @@
   "familiar.feline.nero.description": "A self-assured spirit that exudes confidence.",
   "familiar.feline.salem.name": "Salem",
   "familiar.feline.salem.description": "A loyal spirit known for cunning and playfulness.",
-  "witcheroo.notices.obtained_familiair": "The familiar %s has joined you.",
+
+  "familiar.ursine.puck.name": "Puck",
+  "familiar.ursine.puck.description": "A powerful spirit with an incredibly strong grip.",
+  "familiar.ursine.thurston.name": "Thurston",
+  "familiar.ursine.thurston.description": "A fierce spirit, harder than rock.",
+
+
+  "__comment_notices": "Notices",
+
+  "witcheroo.notices.absorbed_familiar": "You have absorbed the target's soul. The spirit %s has joined you.",
+  "witcheroo.notices.bound_familiar": "The spirit %s has been bound to the target.",
   "witcheroo.notices.player_mana": "%s's mana is %s/%s",
   "witcheroo.notices.no_witch_cap": "%s is not a witch!",
-  "witcheroo.notices.no_familiairs": "%s has no familiars.",
+  "witcheroo.notices.no_familiars": "%s has no familiars.",
   "witcheroo.notices.cleared_familiars": "Cleared %s familiar(s) from player %s.",
   "witcheroo.notices.name": "Name: %s",
   "witcheroo.notices.mana": "Mana: %s",
+  "witcheroo.notices.mana_total": "Mana: %s/%s",
   "witcheroo.notices.level": "Level: %s/%s",
   "witcheroo.notices.bound": "Bound",
   "witcheroo.notices.incorporeal": "Incorporeal",
-  "witcheroo.notices.familiar_info": "%s | %s | %s | %s"
+  "witcheroo.notices.familiar_info": "%s | %s | %s | %s",
+  "witcheroo.notices.not_enough_mana": "You don't have the mana (%s) needed for this action (%s).",
+  "witcheroo.notices.mana_used": "You have used %s mana via this action. Mana left: %s",
+  "witcheroo.notices.mana_filled": "Your mana has been filled: %s/%s",
+
+
+  "__comment_encounters": "A bit of a crude introduction. Maybe instead with delays, or a different method.",
+
+  "witcheroo.encounters.first_witch": "Hello %s. It's time you figured out how to connect to the spooky dimension and bring familiars back to the living world. Use your Witch Staff and target a living creature. If they have a compatible soul, it'll be absorbed. Use your staff with that same entity on a cauldron to bind it to the body."
 }

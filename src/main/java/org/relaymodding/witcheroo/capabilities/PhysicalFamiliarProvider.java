@@ -19,7 +19,7 @@ public class PhysicalFamiliarProvider implements ICapabilitySerializable<Compoun
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == Witcheroo.FAMILIAR_CAPABILITY) {
+        if (cap == Capabilities.FAMILIAR_CAPABILITY) {
             return familiarLazyOptional.cast();
         }
         return LazyOptional.empty();

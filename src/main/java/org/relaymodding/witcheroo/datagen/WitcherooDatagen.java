@@ -8,6 +8,7 @@ import net.minecraftforge.data.event.GatherDataEvent;
 import org.relaymodding.witcheroo.Witcheroo;
 import org.relaymodding.witcheroo.familiar.FamiliarDefinition;
 import org.relaymodding.witcheroo.registries.WitcherooRegistries;
+import org.relaymodding.witcheroo.util.Reference;
 
 import java.util.List;
 import java.util.Set;
@@ -45,7 +46,7 @@ public class WitcherooDatagen {
 						);
 					}
 				),
-				Set.of(Witcheroo.MOD_ID)
+				Set.of(Reference.MOD_ID)
 			)
 		);
 	}

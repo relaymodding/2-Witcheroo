@@ -1,0 +1,7 @@
+{
+  "behaviour": "witcheroo:defensive_behaviour",
+  "validTypes": [
+    "minecraft:panda",
+    "minecraft:polar_bear"
+  ]
+}
