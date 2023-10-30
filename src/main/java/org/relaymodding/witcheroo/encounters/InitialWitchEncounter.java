@@ -7,7 +7,11 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.monster.Witch;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import org.relaymodding.witcheroo.Witcheroo;
+import org.relaymodding.witcheroo.registries.WitcherooRegistries;
 import org.relaymodding.witcheroo.util.Reference;
 
 public class InitialWitchEncounter {
@@ -20,7 +24,6 @@ public class InitialWitchEncounter {
 			level.addFreshEntity(witch);
 
 			sendMessageToPlayer(player);
-			// TODO: Give staff?
 
 			player.getTags().add(Reference.MOD_ID + ".encounteredWitch");
 		}
@@ -28,6 +31,6 @@ public class InitialWitchEncounter {
 
 	private static void sendMessageToPlayer(Player player) {
 		player.sendSystemMessage(Component.empty());
-		player.sendSystemMessage(Component.translatable("witcheroo.encounters.first_witch", player.getName().getString()).withStyle(ChatFormatting.DARK_RED));
+		player.sendSystemMessage(Component.translatable("witcheroo.encounters.first_witch", player.getName(), Items.OAK_LOG.getDefaultInstance().getHoverName(), Items.CRYING_OBSIDIAN.getDefaultInstance().getHoverName(), WitcherooRegistries.WITCH_STAFF_OBJECT.get().getDefaultInstance().getHoverName(),  WitcherooRegistries.WITCH_STAFF_OBJECT.get().getDefaultInstance().getHoverName(), Blocks.GLOWSTONE.getName()).withStyle(ChatFormatting.DARK_RED));
 	}
 }

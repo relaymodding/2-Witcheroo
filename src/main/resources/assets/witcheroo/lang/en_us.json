@@ -42,7 +42,9 @@
   "witcheroo.notices.bound_familiar": "The spirit %s has been bound to the target.",
   "witcheroo.notices.player_mana": "%s's mana is %s/%s",
   "witcheroo.notices.no_witch_cap": "%s is not a witch!",
+  "witcheroo.notices.mana_consumed": "%s has been consumed, granting %s mana.",
   "witcheroo.notices.no_familiars": "%s has no familiars.",
+  "witcheroo.notices.no_familiars_to_bind": "You have no familiars that you can bind",
   "witcheroo.notices.cleared_familiars": "Cleared %s familiar(s) from player %s.",
   "witcheroo.notices.name": "Name: %s",
   "witcheroo.notices.mana": "Mana: %s",
@@ -58,5 +60,5 @@
 
   "__comment_encounters": "A bit of a crude introduction. Maybe instead with delays, or a different method.",
 
-  "witcheroo.encounters.first_witch": "Hello %s. It's time you figured out how to connect to the spooky dimension and bring familiars back to the living world. Use your Witch Staff and target a living creature. If they have a compatible soul, it'll be absorbed. Use your staff with that same entity on a cauldron to bind it to the body."
+  "witcheroo.encounters.first_witch": "Hello %s. It's time you figured out how to connect to the spooky dimension and bring familiars back to the living world. It is said that when a pillar of 3 %s on top of %s is lit ablaze, a %s will be created. That %s can then be used on a living creature. If they have a compatible soul, it'll be absorbed. You can then use your staff on an entity of a similar type near a cauldron to bind it to the body. You will however require mana to operate the staff, you can top your mana up by right clicking a %s block."
 }

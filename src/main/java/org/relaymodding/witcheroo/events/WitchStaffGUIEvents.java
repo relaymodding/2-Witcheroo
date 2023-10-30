@@ -15,7 +15,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.relaymodding.witcheroo.capabilities.Capabilities;
-import org.relaymodding.witcheroo.items.WitcherooItems;
+import org.relaymodding.witcheroo.registries.WitcherooRegistries;
 
 import java.awt.*;
 
@@ -33,7 +33,7 @@ public class WitchStaffGUIEvents extends Gui {
 		Player player = mc.player;
 
 		if (player == null) return;
-		if (!player.getMainHandItem().getItem().equals(WitcherooItems.WITCH_STAFF)) return;
+		if (!player.getMainHandItem().getItem().equals(WitcherooRegistries.WITCH_STAFF_OBJECT.get())) return;
 
 		player.getCapability(Capabilities.WITCH_CAPABILITY).ifPresent(witch -> { // TODO networking
 

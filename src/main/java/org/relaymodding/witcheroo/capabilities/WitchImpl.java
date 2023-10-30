@@ -4,10 +4,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import org.relaymodding.witcheroo.familiar.Familiar;
 import org.relaymodding.witcheroo.familiar.type.FamiliarType;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class WitchImpl implements Witch {
 
@@ -38,6 +40,12 @@ public class WitchImpl implements Witch {
     }
 
     @Override
+    public void setFamiliars(Collection<Familiar> familiars) {
+        this.familiars.clear();
+        familiars.stream().map(familiar -> Map.entry(familiar.getType(), familiar)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (o, o2) -> o, () -> this.familiars));
+    }
+
+    @Override
     public Familiar getFamiliar(FamiliarType type) {
         return this.familiars.get(type);
     }
@@ -50,6 +58,12 @@ public class WitchImpl implements Witch {
     @Override
     public Set<ResourceLocation> getCompletedRituals() {
         return rituals;
+    }
+
+    @Override
+    public void setCompletedRituals(Set<ResourceLocation> rituals) {
+        this.rituals.clear();
+        this.rituals.addAll(rituals);
     }
 
     @Override
@@ -95,15 +109,14 @@ public class WitchImpl implements Witch {
 
     @Override
     public int getMaxMana() {
-        return familiars.values().stream().map(familiar -> familiar.getType().getMaxMana()).reduce(0, Integer::sum);
+        return familiars.values().stream().map(familiar -> familiar.getType().getMaxMana()).reduce(25, Integer::sum);
     }
 
     @Override
     public void setMana(int mana) {
         if (mana > getMaxMana()) {
             mana = getMaxMana();
-        }
-        else if (mana < 0) {
+        } else if (mana < 0) {
             mana = 0;
         }
 
@@ -112,8 +125,9 @@ public class WitchImpl implements Witch {
 
     @Override
     public boolean consumeMana(int mana) {
-        if (mana < this.mana) {
+        if (mana <= this.mana) {
             setMana(this.mana - mana);
+
             return true;
         }
         return false;

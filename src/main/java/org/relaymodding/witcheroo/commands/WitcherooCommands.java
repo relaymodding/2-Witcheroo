@@ -159,6 +159,7 @@ public class WitcherooCommands {
 
                 cap.ifPresent(witch -> {
 					witch.setMana(witch.getMaxMana());
+                    witch.sync(serverPlayer);
 
                     ctx.getSource().sendSuccess(() -> Component.translatable("witcheroo.notices.mana_filled", Component.literal(Integer.toString(witch.getMana())), Component.literal(Integer.toString(witch.getMaxMana()))), false);
                 });

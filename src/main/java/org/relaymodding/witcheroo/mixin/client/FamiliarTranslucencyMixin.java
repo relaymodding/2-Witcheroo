@@ -27,7 +27,7 @@ public abstract class FamiliarTranslucencyMixin extends EntityRenderer<LivingEnt
                                         float partialTicks, PoseStack stack,
                                         MultiBufferSource source, int packedLight, CallbackInfo cinfo) {
 
-        WitcherooClientRenderer.entityId = entity.getId();
+        WitcherooClientRenderer.entity = entity;
         WitcherooClientRenderer.buffer = source;
         WitcherooClientRenderer.texture = getTextureLocation(entity);
     }

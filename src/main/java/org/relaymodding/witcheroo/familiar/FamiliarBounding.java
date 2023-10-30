@@ -63,7 +63,7 @@ public class FamiliarBounding {
 
             keepSameType(oldBody, body);
 
-            WitcherooPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new SyncFamiliarPacket(body.getId(), SyncFamiliarPacket.ADD_ENTITY));
+            WitcherooPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new SyncFamiliarPacket(body.getUUID(), SyncFamiliarPacket.ADD_ENTITY));
         });
 
         owner.sendSystemMessage(Component.translatable("witcheroo.notices.bound_familiar", familiar.getType().getDisplayName()).withStyle(ChatFormatting.DARK_GRAY));

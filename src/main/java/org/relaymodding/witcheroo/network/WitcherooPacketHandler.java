@@ -21,6 +21,8 @@ public class WitcherooPacketHandler {
 
     public static void registerPackets() {
         INSTANCE.registerMessage(id++, SyncFamiliarPacket.class, SyncFamiliarPacket::encode, SyncFamiliarPacket::decode, SyncFamiliarPacket::handle);
+        INSTANCE.registerMessage(id++, SyncWitchPacket.class, SyncWitchPacket::encode, SyncWitchPacket::decode, SyncWitchPacket::handle);
+        INSTANCE.registerMessage(id++, SyncAllFamiliarsPacket.class, SyncAllFamiliarsPacket::encode, SyncAllFamiliarsPacket::decode, SyncAllFamiliarsPacket::handle);
     }
 
 }

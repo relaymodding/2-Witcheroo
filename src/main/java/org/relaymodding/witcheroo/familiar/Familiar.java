@@ -1,17 +1,18 @@
 package org.relaymodding.witcheroo.familiar;
 
-import java.util.UUID;
-
-import org.jetbrains.annotations.Nullable;
-import org.relaymodding.witcheroo.familiar.type.FamiliarType;
-import org.relaymodding.witcheroo.registries.WitcherooRegistries;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Nullable;
+import org.relaymodding.witcheroo.familiar.type.FamiliarType;
+import org.relaymodding.witcheroo.registries.WitcherooRegistries;
+
+import java.util.Objects;
+import java.util.UUID;
 
 public class Familiar {
 
@@ -63,10 +64,10 @@ public class Familiar {
 
     @Nullable
     public PathfinderMob getEntity(ServerLevel level) {
-    	if (hasPhysicalBody() && level.getEntity(this.entityId) instanceof PathfinderMob mob) {
-    		return mob;
-    	}
-    	
+        if (hasPhysicalBody() && level.getEntity(this.entityId) instanceof PathfinderMob mob) {
+            return mob;
+        }
+
         return null;
     }
 
@@ -75,7 +76,7 @@ public class Familiar {
         mob.removeFreeWill();
         mob.targetSelector.removeAllGoals(goal -> true);
         definition.behaviour().registerGoals(mob, owner);
-        
+
         this.setPhysicalBody(true);
     }
 
@@ -102,5 +103,35 @@ public class Familiar {
         }
         definition = WitcherooRegistries.getFamiliarDefinitionRegistry().get(new ResourceLocation(tag.getString(DEFINITION)));
         level = tag.getInt(LEVEL);
+    }
+
+    public void toNetwork(FriendlyByteBuf buf) {
+        ResourceLocation typeKey = WitcherooRegistries.getFamiliarTypeRegistry().getKey(this.getType());
+        ResourceLocation defKey = WitcherooRegistries.getFamiliarDefinitionRegistry().getKey(this.getFamiliarDefinition());
+
+        buf.writeResourceLocation(Objects.requireNonNull(typeKey));
+        buf.writeBoolean(this.getEntityId() != null);
+        if(this.getEntityId() != null) {
+            buf.writeUUID(this.getEntityId());
+        }
+        buf.writeResourceLocation(Objects.requireNonNull(defKey));
+        buf.writeInt(this.getLevel());
+        buf.writeBoolean(this.hasPhysicalBody());
+    }
+
+    public Familiar fromNetwork(FriendlyByteBuf buf) {
+
+        this.setType(WitcherooRegistries.getFamiliarTypeRegistry().get(buf.readResourceLocation()));
+        if (buf.readBoolean()) {
+            this.entityId = buf.readUUID();
+        }
+        this.setFamiliarDefinition(WitcherooRegistries.getFamiliarDefinitionRegistry().get(buf.readResourceLocation()));
+        this.setLevel(buf.readInt());
+        this.setPhysicalBody(buf.readBoolean());
+        return this;
+    }
+
+    public static Familiar createFromNetwork(FriendlyByteBuf buf) {
+        return new Familiar().fromNetwork(buf);
     }
 }

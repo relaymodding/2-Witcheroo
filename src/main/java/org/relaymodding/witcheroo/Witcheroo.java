@@ -10,16 +10,13 @@ import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.relaymodding.witcheroo.commands.WitcherooCommands;
 import org.relaymodding.witcheroo.datagen.WitcherooDatagen;
-import org.relaymodding.witcheroo.events.WitcherooCustomEvents;
-import org.relaymodding.witcheroo.events.WitcherooForgeEvents;
-import org.relaymodding.witcheroo.events.WitcherooTestEvents;
-import org.relaymodding.witcheroo.events.WitchStaffGUIEvents;
-import org.relaymodding.witcheroo.items.WitcherooItems;
+import org.relaymodding.witcheroo.events.*;
 import org.relaymodding.witcheroo.network.WitcherooPacketHandler;
 import org.relaymodding.witcheroo.registries.WitcherooRegistries;
 import org.relaymodding.witcheroo.util.Reference;
@@ -32,22 +29,26 @@ public class Witcheroo {
 
         modEventBus.addListener(WitcherooRegistries::registerDatapackRegistry);
         modEventBus.addListener(WitcherooDatagen::datagen);
-        modEventBus.addListener(Witcheroo::loadComplete);
+        modEventBus.addListener(Witcheroo::clientSetup);
         modEventBus.addListener(Witcheroo::addToCreativeTab);
 
         modEventBus.addListener(WitcherooCustomEvents::registerCapabilitiesEvent);
-		MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, WitcherooCustomEvents::attachCapabilitiesEvent);
+        modEventBus.addListener(WitcherooClientEvents::registerBERs);
+        MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, WitcherooCustomEvents::attachCapabilitiesEvent);
 
         MinecraftForge.EVENT_BUS.addListener(WitcherooForgeEvents::familiarBodyLoadEvent);
+        MinecraftForge.EVENT_BUS.addListener(WitcherooForgeEvents::playerLogin);
         MinecraftForge.EVENT_BUS.addListener(WitcherooForgeEvents::familiarBodyDeathEvent);
 
         MinecraftForge.EVENT_BUS.addListener(WitcherooForgeEvents::onServerTick);
         MinecraftForge.EVENT_BUS.addListener(WitcherooForgeEvents::onPlayerTick);
         MinecraftForge.EVENT_BUS.addListener(WitcherooForgeEvents::onEntityInteract);
         MinecraftForge.EVENT_BUS.addListener(WitcherooForgeEvents::onCauldronRightClick);
+        MinecraftForge.EVENT_BUS.addListener(WitcherooForgeEvents::triggerConsumeNature);
+        MinecraftForge.EVENT_BUS.addListener(WitcherooForgeEvents::triggerMana);
         MinecraftForge.EVENT_BUS.addListener(WitcherooForgeEvents::onWitchStaffRightClick);
 
-		MinecraftForge.EVENT_BUS.addListener(WitcherooTestEvents::ritualTest);
+        MinecraftForge.EVENT_BUS.addListener(WitcherooTestEvents::ritualTest);
         MinecraftForge.EVENT_BUS.addListener(WitcherooTestEvents::familiarSummonTest);
 
         MinecraftForge.EVENT_BUS.addListener(Witcheroo::registerCommands);
@@ -55,21 +56,21 @@ public class Witcheroo {
         WitcherooRegistries.FAMILIAR_TYPE_SERIALIZERS.register(modEventBus);
         WitcherooRegistries.FAMILIAR_BEHAVIOURS.register(modEventBus);
         WitcherooRegistries.ITEMS.register(modEventBus);
+        WitcherooRegistries.BLOCKS.register(modEventBus);
+        WitcherooRegistries.BLOCK_ENTITY_TYPE.register(modEventBus);
+
+
 
         WitcherooPacketHandler.registerPackets();
     }
 
-    private static void loadComplete(final FMLLoadCompleteEvent event) {
-        WitcherooItems.loadItems();
-
-        if (FMLEnvironment.dist.equals(Dist.CLIENT)) {
-            MinecraftForge.EVENT_BUS.register(new WitchStaffGUIEvents(Minecraft.getInstance(), Minecraft.getInstance().getItemRenderer()));
-        }
+    private static void clientSetup(final FMLClientSetupEvent event){
+        MinecraftForge.EVENT_BUS.register(new WitchStaffGUIEvents(Minecraft.getInstance(), Minecraft.getInstance().getItemRenderer()));
     }
 
     public static void addToCreativeTab(BuildCreativeModeTabContentsEvent e) {
         if (e.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            e.accept(WitcherooItems.WITCH_STAFF);
+            e.accept(WitcherooRegistries.WITCH_STAFF_OBJECT.get());
         }
     }
 
@@ -78,6 +79,10 @@ public class Witcheroo {
     }
 
     public static ResourceLocation resourceLocation(final String value) {
-        return new ResourceLocation(Reference.MOD_ID, value);
+        return new ResourceLocation(resourceString(value));
+    }
+
+    public static String resourceString(final String value) {
+        return Reference.MOD_ID + ":" + value;
     }
 }
