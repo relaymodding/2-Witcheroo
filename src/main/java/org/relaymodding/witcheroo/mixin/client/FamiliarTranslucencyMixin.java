@@ -22,23 +22,28 @@ public abstract class FamiliarTranslucencyMixin extends EntityRenderer<LivingEnt
         super(null);
     }
 
-    @Inject(method = "render", at = @At("HEAD"))
+    @Inject(method = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At("HEAD"))
     private void witcheroo_renderinject(LivingEntity entity, float yaw,
                                         float partialTicks, PoseStack stack,
                                         MultiBufferSource source, int packedLight, CallbackInfo cinfo) {
-
         WitcherooClientRenderer.entity = entity;
         WitcherooClientRenderer.buffer = source;
         WitcherooClientRenderer.texture = getTextureLocation(entity);
     }
 
-    @ModifyArg(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
+    @ModifyArg(method = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/EntityModel;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V"), index = 7)
     private float witcheroo_modifyAlpha(float alpha) {
         return WitcherooClientRenderer.modifyAlpha(alpha);
     }
 
-    @ModifyArg(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
+    @ModifyArg(method = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/EntityModel;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V"), index = 4)
+    private float witcheroo_modifyRed(float red) {
+        return WitcherooClientRenderer.modifyRed(red);
+    }
+
+    @ModifyArg(method = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/EntityModel;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V"), index = 1)
     private VertexConsumer witcheroo_modifyRenderType(VertexConsumer originalVertexConsumer) {
         return WitcherooClientRenderer.modifyRenderType(originalVertexConsumer);

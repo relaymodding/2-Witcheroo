@@ -240,10 +240,9 @@ public class WitcherooForgeEvents {
     // Creating a familiar by targetting a cauldron with the Witch Staff
     public static void onCauldronRightClick(final PlayerInteractEvent.RightClickBlock e) {
         Level level = e.getLevel();
-        if (level.isClientSide || e.getHand() != InteractionHand.MAIN_HAND || !(e.getEntity() instanceof Player))
+        if (level.isClientSide || e.getHand() != InteractionHand.MAIN_HAND || !(e.getEntity() instanceof ServerPlayer player))
             return;
 
-        ServerPlayer player = (ServerPlayer) e.getEntity();
         BlockPos pos = e.getPos();
         BlockState blockState = level.getBlockState(pos);
         if (blockState.getBlock() instanceof CauldronBlock) {

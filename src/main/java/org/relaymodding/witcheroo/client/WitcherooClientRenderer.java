@@ -27,6 +27,11 @@ public class WitcherooClientRenderer {
         return originalValue;
     }
 
+    public static float modifyRed(float red) {
+        if (trackedFamiliars.contains(entity.getUUID())) return 0.5f;
+        return red;
+    }
+
     public static VertexConsumer modifyRenderType(VertexConsumer original) {
         if (trackedFamiliars.contains(entity.getUUID())) {
             return VertexMultiConsumer.create(buffer.getBuffer(RenderType.entityGlint()), buffer.getBuffer(RenderType.entityTranslucent(texture)));
